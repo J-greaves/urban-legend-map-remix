@@ -6,7 +6,7 @@ import MarkerModal from "./MarkerModal";
 import MythModal from "./MythModal";
 
 interface MapComponentProps {
-  actionData: any; // Accept actionData as a prop
+  actionData: any;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ actionData }) => {
@@ -18,7 +18,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ actionData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewMythModalOpen, setIsNewMythModalOpen] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
-  const [mapSnapshot, setMapSnapshot] = useState<string | null>(null);
 
   useEffect(() => {
     if (mapContainerRef.current) {
@@ -34,7 +33,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ actionData }) => {
         setIsModalOpen(false);
         const lngLat: [number, number] = [event.lngLat.lng, event.lngLat.lat];
         setMarkerPosition(lngLat);
-        setIsNewMythModalOpen(false);
         const { x, y } = initialisedMap.project(lngLat);
         setModalPosition({ top: y, left: x });
         setIsModalOpen(true);
@@ -50,33 +48,24 @@ const MapComponent: React.FC<MapComponentProps> = ({ actionData }) => {
     }
   }, []);
 
-  const handleCaptureSnapshot = () => {
-    if (map && markerPosition) {
-      const mapCanvas = map.getCanvas().toDataURL("image/png");
-      setMapSnapshot(mapCanvas);
-      setIsNewMythModalOpen(true); // Open the MythModal after capturing the snapshot
-    }
-  };
-
   return (
     <>
       <div ref={mapContainerRef} style={{ width: "100%", height: "100%" }} />
       {markerPosition && <Marker position={markerPosition} map={map!} />}
 
       <MarkerModal
-        onClose={() => setIsModalOpen(false)}
-        position={markerPosition}
         isVisible={isModalOpen}
         modalPosition={modalPosition}
-        onCaptureSnapshot={handleCaptureSnapshot} // Keep this if needed
+        openModal={() => {
+          setIsNewMythModalOpen(true);
+        }}
       />
 
       <MythModal
         onClose={() => setIsNewMythModalOpen(false)}
         isVisible={isNewMythModalOpen}
-        snapshot={mapSnapshot}
-        markerPosition={markerPosition} // Pass the marker position to MythModal
-        map={map!}
+        markerPosition={markerPosition}
+        map={map}
         actionData={actionData}
       />
     </>

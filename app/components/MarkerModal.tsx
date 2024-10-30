@@ -1,20 +1,15 @@
-// MarkerModal.tsx
 import React from "react";
 
 interface MarkerModalProps {
-  onClose: () => void;
-  position: [number, number] | null;
   isVisible: boolean;
-  modalPosition: { top: number; left: number }; // New prop for modal position
-  onCaptureSnapshot: () => void; // New prop for capturing snapshot
+  modalPosition: { top: number; left: number };
+  openModal: () => void;
 }
 
 const MarkerModal: React.FC<MarkerModalProps> = ({
-  onClose,
-  position,
   isVisible,
   modalPosition,
-  onCaptureSnapshot,
+  openModal,
 }) => {
   return (
     <div
@@ -22,16 +17,16 @@ const MarkerModal: React.FC<MarkerModalProps> = ({
         isVisible ? "opacity-100" : "opacity-0"
       }`}
       style={{
-        top: `${modalPosition.top}px`, // Set top position from props
-        left: `${modalPosition.left}px`, // Set left position from props
-        transform: "translate(-80px, -20px)", // Adjust to center above the marker
+        top: `${modalPosition.top}px`,
+        left: `${modalPosition.left}px`,
+        transform: "translate(-80px, -20px)",
       }}
     >
       <h1 className="text-black self-center align-middle">
         Add a myth to this location?
       </h1>
       <button
-        onClick={onCaptureSnapshot}
+        onClick={openModal}
         className="flex items-center justify-center w-8 h-8 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
       >
         <svg

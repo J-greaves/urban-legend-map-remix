@@ -1,4 +1,3 @@
-// Marker.tsx
 import React, { useEffect } from "react";
 import maplibregl from "maplibre-gl";
 
@@ -13,10 +12,10 @@ const Marker: React.FC<MarkerProps> = ({ position, map }) => {
 
     return () => {
       marker.remove();
-    }; // Cleanup
+    };
   }, [map, position]);
 
-  return null; // No additional rendering for the marker component
+  return null;
 };
 
 export default Marker;

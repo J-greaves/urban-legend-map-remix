@@ -6,22 +6,20 @@ import Marker from "./Marker";
 interface MythModalProps {
   onClose: () => void;
   isVisible: boolean;
-  snapshot: string | null;
-  markerPosition: [number, number] | null; // New prop for marker position
-  map: maplibregl.Map;
+  markerPosition: [number, number] | null;
+  map: maplibregl.Map | null;
   actionData: any;
 }
 
 const MythModal: React.FC<MythModalProps> = ({
   onClose,
   isVisible,
-  snapshot,
   markerPosition,
   map,
   actionData,
 }) => {
-  const smallMapRef = useRef<HTMLDivElement | null>(null); // Ref for the small map
-  const smallMapRefMarker = useRef<maplibregl.Marker | null>(null); // Ref for the marker
+  const smallMapRef = useRef<HTMLDivElement | null>(null);
+  const smallMapRefMarker = useRef<maplibregl.Marker | null>(null);
 
   useEffect(() => {
     if (smallMapRef.current && markerPosition) {
@@ -29,30 +27,29 @@ const MythModal: React.FC<MythModalProps> = ({
         container: smallMapRef.current,
         style:
           "https://api.maptiler.com/maps/80adff1c-a2b7-43ca-98f1-3139ca1e9695/style.json?key=gEmLBDE8Bs39pXFQEk0Q",
-        center: markerPosition, // Center the small map on the marker
-        zoom: 15, // Set the desired zoom level for the small map
+        center: markerPosition,
+        zoom: 15,
       });
 
-      // Create a marker and add it to the small map
       smallMapRefMarker.current = new maplibregl.Marker()
-        .setLngLat(markerPosition) // Set the marker position
-        .addTo(smallMap); // Add marker to small map
+        .setLngLat(markerPosition)
+        .addTo(smallMap);
 
       return () => {
-        smallMap.remove(); // Cleanup on unmount
+        smallMap.remove();
         if (smallMapRefMarker.current) {
-          smallMapRefMarker.current.remove(); // Remove the marker on cleanup
+          smallMapRefMarker.current.remove();
         }
       };
     }
-  }, [markerPosition]); // Re-run if markerPosition changes
+  }, [markerPosition]);
 
   return (
     <div
       className={`fixed top-0 right-0 h-full border-l-2 border-slate-950 shadow-black bg-slate-800 shadow-lg w-[80%] max-w-[400px] p-6 transform transition-transform duration-1000 ease-in-out ${
         isVisible ? "translate-x-0" : "translate-x-full"
       }`}
-      style={{ zIndex: 1000, willChange: "transform" }} // Inline z-index set to 1000
+      style={{ zIndex: 1000, willChange: "transform" }}
     >
       <div className="flex flex-col h-full justify-start items-start gap-4">
         {/* Small Map Display */}
