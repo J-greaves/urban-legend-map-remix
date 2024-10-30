@@ -5,20 +5,40 @@ import MapComponent from "~/components/MapComponent";
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const title = formData.get("title");
-  const storyType = formData.get("storyType");
+  const story_type = formData.get("story_type");
   const story = formData.get("story");
   const latlong = formData.get("latlong");
   if (
     typeof title !== "string" ||
-    typeof storyType !== "string" ||
+    typeof story_type !== "string" ||
     typeof story !== "string"
   ) {
     return json({ error: "Invalid form data" }, { status: 400 });
   }
 
-  console.log({ title, storyType, story, latlong });
+  const response = await fetch("http://localhost:3000/stories", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title,
+      story_type,
+      story,
+      latlong,
+    }),
+  });
 
-  return json({ success: true });
+  if (!response.ok) {
+    return json(
+      { error: "Failed to create story" },
+      { status: response.status }
+    );
+  }
+
+  const result = await response.json();
+  console.log(response.body);
+  return json(result);
 };
 
 export default function Index() {

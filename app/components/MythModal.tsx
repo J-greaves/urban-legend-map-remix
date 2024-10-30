@@ -83,7 +83,7 @@ const MythModal: React.FC<MythModalProps> = ({
           </div>
           <div className="flex flex-row gap-4">
             <select
-              name="storyType"
+              name="story_type"
               className="rounded border bg-slate-900 hover:cursor-pointer"
             >
               <option value="" disabled>
