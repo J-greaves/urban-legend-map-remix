@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import Marker from "./Marker";
+import { useFetcher } from "@remix-run/react";
+import { Story } from "~/routes/_index";
 
 interface MythModalProps {
   onClose: () => void;
@@ -9,6 +10,22 @@ interface MythModalProps {
   markerPosition: [number, number] | null;
   map: maplibregl.Map | null;
   actionData: any;
+  stories: Story[];
+  setStories: React.Dispatch<React.SetStateAction<Story[]>>;
+}
+
+interface StoryData {
+  success?: boolean;
+  story?: {
+    id: number;
+    title: string;
+    location: string;
+    story_type: string;
+    story: string;
+    latlong: string;
+    createdAt: Date;
+  };
+  error?: string;
 }
 
 const MythModal: React.FC<MythModalProps> = ({
@@ -17,10 +34,17 @@ const MythModal: React.FC<MythModalProps> = ({
   markerPosition,
   map,
   actionData,
+  stories,
+  setStories,
 }) => {
   const smallMapRef = useRef<HTMLDivElement | null>(null);
   const smallMapRefMarker = useRef<maplibregl.Marker | null>(null);
+  const fetcher = useFetcher<StoryData>();
+  const titleRef = useRef<HTMLInputElement>(null);
+  const storyRef = useRef<HTMLTextAreaElement>(null);
+  const storyTypeRef = useRef<HTMLSelectElement>(null);
 
+  //MapLibre small map for New Myth Modal initialisation
   useEffect(() => {
     if (smallMapRef.current && markerPosition) {
       const smallMap = new maplibregl.Map({
@@ -44,12 +68,35 @@ const MythModal: React.FC<MythModalProps> = ({
     }
   }, [markerPosition]);
 
+  //Optimistcally render new myth and alert user (change alert to modal at some point)
+  useEffect(() => {
+    if (fetcher.data?.success && fetcher.data.story) {
+      const story = fetcher.data.story;
+      alert(`New Story Added:\nTitle: ${story.title}\nStory: ${story.story}`);
+      const newStory: Story = {
+        id: story.id,
+        title: story.title,
+        location: story.location,
+        story_type: story.story_type,
+        story: story.story,
+        latlong: JSON.parse(story.latlong),
+        createdAt: story.createdAt,
+      };
+      setStories([...stories, newStory]);
+    }
+    if (titleRef.current) titleRef.current.value = "";
+    if (storyRef.current) storyRef.current.value = "";
+    if (storyTypeRef.current) storyTypeRef.current.value = "";
+
+    onClose();
+  }, [fetcher.data]);
+
   return (
     <div
-      className={`fixed top-0 right-0 h-full border-l-2 border-slate-950 shadow-black bg-slate-800 shadow-lg w-[80%] max-w-[400px] p-6 transform transition-transform duration-1000 ease-in-out ${
+      className={`z-100 fixed top-0 right-0 h-full border-l-2 border-slate-950 shadow-black bg-slate-800 shadow-lg w-[80%] max-w-[400px] p-6 transform transition-transform duration-1000 ease-in-out ${
         isVisible ? "translate-x-0" : "translate-x-full"
       }`}
-      style={{ zIndex: 1000, willChange: "transform" }}
+      style={{ zIndex: 999, willChange: "transform" }}
     >
       <div className="flex flex-col h-full justify-start items-start gap-4">
         {/* Small Map Display */}
@@ -57,8 +104,8 @@ const MythModal: React.FC<MythModalProps> = ({
           ref={smallMapRef}
           style={{ width: "100%", height: "200px", borderRadius: "8px" }}
         />
-        {markerPosition && <Marker position={markerPosition} map={map} />}
-        <form
+        {/*Submit new myth form*/}
+        <fetcher.Form
           method="post"
           action="/?index"
           className="flex  flex-col gap-4 w-[100%] h-full"
@@ -75,13 +122,26 @@ const MythModal: React.FC<MythModalProps> = ({
               id="title"
               name="title"
               placeholder="Enter a title for your tale..."
+              ref={titleRef}
+              className="p-2 rounded border w-[100%]"
+            />
+          </div>
+          <div className="flex flex-col items-start gap-0">
+            <label htmlFor="title">Location:</label>
+            <input
+              id="location"
+              name="location"
+              placeholder="Enter street, town, city etc..."
+              ref={titleRef}
               className="p-2 rounded border w-[100%]"
             />
           </div>
           <div className="flex flex-row gap-4">
             <select
               name="story_type"
+              ref={storyTypeRef}
               className="rounded border bg-slate-900 hover:cursor-pointer"
+              required
             >
               <option value="" disabled>
                 Story type
@@ -94,7 +154,7 @@ const MythModal: React.FC<MythModalProps> = ({
               <option value="historic fact">Historic Fact</option>
               <option value="urban legend">Urban Legend</option>
               <option value="aliens">Aliens</option>
-              <option value="songs">Songs</option>
+              <option value="song">Songs</option>
               <option value="other">Other</option>
             </select>
             <p className="bg-slate-900 w-[25px] h-[25px] text-center rounded-full shadow-lg hover:bg-slate-700 transition duration-200 ease-in-out hover:cursor-pointer">
@@ -106,6 +166,7 @@ const MythModal: React.FC<MythModalProps> = ({
             id="story"
             name="story"
             placeholder="Write the story of your tale here..."
+            ref={storyRef}
             className="p-2 rounded border w-[100%] h-full"
           ></textarea>
           <input
@@ -128,7 +189,7 @@ const MythModal: React.FC<MythModalProps> = ({
               Close
             </button>
           </div>
-        </form>
+        </fetcher.Form>
       </div>
     </div>
   );

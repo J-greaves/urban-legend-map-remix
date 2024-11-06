@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model stories {
+  id         Int      @id @default(autoincrement())
+  title      String
+  location   String
+  story_type String
+  story      String
+  latlong    String
+  createdAt  DateTime @default(now())
+
+      @@map("stories") 
+
+}

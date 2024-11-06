@@ -10,3 +10,10 @@ body {
     color-scheme: dark;
   }
 }
+
+@layer components {
+  .maplibregl-popup-close-button {
+    @apply text-black dark:text-black;
+    background-color: transparent;
+  }
+}
