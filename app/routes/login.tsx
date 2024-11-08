@@ -12,7 +12,15 @@ const LoginOrSignup = () => {
     },
   };
 
-  return <StytchLogin config={config} />;
+  return (
+    <div className="flex flex-col bg-gray-900 h-[100vh] sm:justify-center items-center gap-10">
+      <img
+        className="sm:mt-0 mt-8 max-h-[80px] overflow-hidden"
+        src="/logo.png"
+      />
+      <StytchLogin config={config} />
+    </div>
+  );
 };
 
 export default LoginOrSignup;

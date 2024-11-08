@@ -6,8 +6,6 @@ import StoryModal from "~/components/StoryModal";
 import Header from "~/components/Header";
 import { prisma } from "~/db/prisma.server";
 import { Link } from "@remix-run/react";
-import { Stytch } from "@stytch/stytch-node";
-import cookie from "cookie";
 
 export interface Story {
   id: number;

@@ -1,4 +1,6 @@
 import { useStytchUser } from "@stytch/react";
+import { LogOutButton } from "./LogOutButton";
+import { useNavigate } from "@remix-run/react";
 
 interface HeaderProps {
   handleFilterChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -16,27 +18,35 @@ const Header: React.FC<HeaderProps> = ({
   setIsHeaderVisible,
 }) => {
   const { user } = useStytchUser();
+  const navigate = useNavigate();
   return (
-    <div className="flex flex-col items-center h-full justify-center">
+    <div className="flex flex-col h-full justify-center">
       {/* The sliding header */}
-      <div className="flex flex-row justify-center items-center w-full">
-        {/* Burger button */}
-        <button
-          onClick={() => setBurgerOnOff(!burgerOnOff)}
-          className="bg-white hover:bg-opacity-50 rounded sm:ml-4 ml-2 p-2 sm:w-15 sm:h-15 w-8 h-8 flex flex-col justify-between items-center space-y-1"
-        >
-          <div className="w-6 h-1 bg-black rounded"></div>
-          <div className="w-6 h-1 bg-black rounded"></div>
-          <div className="w-6 h-1 bg-black rounded"></div>
-        </button>
-        <img className="sm:ml-8 ml-2 sm:w-[300px] w-[200px]" src="/logo.png" />
+      <div className="flex flex-row items-center w-full gap-1">
+        <div className="flex flex-row items-center justify-start">
+          {/* Burger button */}
+          <button
+            onClick={() => setBurgerOnOff(!burgerOnOff)}
+            className="bg-white hover:bg-opacity-50 rounded sm:ml-4 ml-4 sm:p-2 p-0.5 sm:w-10 sm:h-10 w-6 h-8 flex flex-col justify-center items-center space-y-1"
+          >
+            <div className="sm:w-6 w-4 h-1 bg-black rounded"></div>
+            <div className="sm:w-6 w-4 h-1 bg-black rounded"></div>
+            <div className="sm:w-6 w-4 h-1 bg-black rounded"></div>
+          </button>
+          {/* Logo */}
+          <img
+            className="sm:ml-8 ml-2 max-h-[80px] overflow-hidden"
+            src="/logo.png"
+          />
+        </div>
+
         {/* Filter Dropdown */}
-        <div className="flex flex-row justify-evenly w-[100%]">
-          <div className="flex sm:flex-row flex-col sm:gap-4 gap-1 sm:text-base text-sm ml-2">
+        <div className="flex flex-row sm:gap-4 gap-1 sm:text-base text-sm sm:mr-8 mr-2 ml-auto w-auto items-center">
+          <div>
             <p>Story Type:</p>
             <select
               name="story_type"
-              className="rounded border bg-slate-900 hover:cursor-pointer w-[90%]"
+              className="rounded border bg-slate-900 hover:cursor-pointer w-[70%]"
               onChange={handleFilterChange}
             >
               <option value="" disabled>
@@ -54,8 +64,25 @@ const Header: React.FC<HeaderProps> = ({
               <option value="song">Songs</option>
               <option value="other">Other</option>
             </select>
-            <p className="sm:pl-4">Logged in user: {user?.emails[0].email}</p>
           </div>
+          {user ? (
+            <p className="md:block hidden">
+              Logged in user: {user.emails[0].email}
+            </p>
+          ) : null}
+
+          {user ? (
+            <LogOutButton />
+          ) : (
+            <button
+              className="bg-white sm:rounded sm:block hidden text-black sm:p-1 p-0.5 sm:mx-4 sm:text-base sm:font-normal font-bold text-xs rounded-lg w-auto sm:max-w-[100px] max-w-[40px]"
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Log in
+            </button>
+          )}
         </div>
       </div>
 

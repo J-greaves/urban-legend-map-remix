@@ -65,7 +65,7 @@ const StoryModal: React.FC<StoryModalProps> = ({
       >
         <div
           ref={modalContentRef}
-          className="bg-slate-950 opacity-90 p-8 rounded shadow-lg w-[80%] h-[80%] gap-4 flex flex-col overflow-y-auto"
+          className="bg-slate-950 bg-opacity-90 p-8 rounded shadow-lg w-[80%] h-[80%] gap-4 flex flex-col overflow-y-auto"
         >
           <h2 className="text-3xl font-semibold text-white">
             {story?.title ?? null}

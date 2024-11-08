@@ -9,6 +9,7 @@ import {
 import { StytchProvider } from "@stytch/react";
 import { StytchUIClient } from "@stytch/vanilla-js";
 import type { LinksFunction } from "@remix-run/node";
+import { StytchHeadlessClient } from "@stytch/vanilla-js/dist/StytchHeadlessClient";
 
 import "./tailwind.css";
 
