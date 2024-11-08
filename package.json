@@ -11,15 +11,20 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@prisma/client": "^5.21.1",
+    "@prisma/client": "^5.22.0",
     "@remix-run/node": "^2.13.1",
     "@remix-run/react": "^2.13.1",
     "@remix-run/serve": "^2.13.1",
+    "@stytch/nextjs": "^21.1.0",
+    "@stytch/react": "^19.1.0",
+    "@stytch/stytch-js": "^3.3.4",
+    "@stytch/vanilla-js": "^5.6.1",
+    "dotenv": "^16.4.5",
     "isbot": "^4.1.0",
     "maplibre-gl": "^4.7.1",
-    "prisma": "^5.21.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "remix": "^2.13.1"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.13.1",
@@ -35,6 +40,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.38",
+    "prisma": "^5.22.0",
     "tailwindcss": "^3.4.4",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",

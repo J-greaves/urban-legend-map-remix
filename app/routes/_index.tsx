@@ -5,6 +5,9 @@ import MapComponent from "~/components/MapComponent";
 import StoryModal from "~/components/StoryModal";
 import Header from "~/components/Header";
 import { prisma } from "~/db/prisma.server";
+import { Link } from "@remix-run/react";
+import { Stytch } from "@stytch/stytch-node";
+import cookie from "cookie";
 
 export interface Story {
   id: number;
@@ -113,10 +116,11 @@ export default function Index() {
         story={story}
       />
       <div
-        className={`fixed top-0 left-0 w-[80%] max-w-[300px] h-full bg-gray-900 shadow-lg shadow-black border-r-2 border-slate-950 z-50 transform transition-transform duration-1000 ease-in-out ${
+        className={`flex items-start flex-col g-4 p-8 fixed top-0 left-0 w-[80%] max-w-[300px] h-full bg-gray-900 shadow-lg shadow-black border-r-2 border-slate-950 z-50 transform transition-transform duration-1000 ease-in-out ${
           burgerOnOff ? "translate-x-0" : "-translate-x-full"
         }`}
       >
+        <Link to="/login">login</Link>
         <button
           onClick={() => {
             setBurgerOnOff(!burgerOnOff);

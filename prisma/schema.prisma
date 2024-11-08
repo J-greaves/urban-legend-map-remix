@@ -10,12 +10,11 @@ datasource db {
 model stories {
   id         Int      @id @default(autoincrement())
   title      String
-  location   String
   story_type String
-  story      String
+  story      String   @db.Text
   latlong    String
   createdAt  DateTime @default(now())
+  location   String
 
-      @@map("stories") 
-
+  @@map("stories")
 }

@@ -141,14 +141,16 @@ const MapComponent: React.FC<MapComponentProps> = ({
             closeOnMove: true,
             maxWidth: "180px",
           }).setLngLat([lng, lat]).setHTML(`
-          <img src=${icon} class="w-[35px] justify-self-center mb-1"/>
+          <div class="flex justify-center">
+            <img src=${icon} class="w-[35px] justify-self-center mb-1"/>
+          </div>
           <p class="text-black font-medium text-sm text-center mb-1">${
             story.story_type.charAt(0).toUpperCase() + story.story_type.slice(1)
           }</p>
           <h3 class="text-black font-semibold text-base mb-1">${
             story.title
           }</h3>
-          <button id="read-more" class="text-blue-500 w-full block hover:underline text-right">Read more...</button>
+          <button id="read-more" class="focus:outline-none text-blue-500 w-full block hover:underline text-right">Read more...</button>
         `);
 
           newPopup.addTo(map);

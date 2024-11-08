@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Links,
   Meta,
@@ -5,6 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { StytchProvider } from "@stytch/react";
+import { StytchUIClient } from "@stytch/vanilla-js";
 import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
@@ -41,5 +44,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const [stytchClient, setStytchClient] = useState<StytchUIClient | null>(null);
+
+  useEffect(() => {
+    // Initialize Stytch UI Client on the client side
+    const token = import.meta.env.VITE_STYTCH_PUBLIC_TOKEN; //have to add 'VITE_' for client-side env variables in Vite
+    if (!token) {
+      console.error("VITE_STYTCH_PUBLIC_TOKEN is missing.");
+      return;
+    }
+
+    // Create a Stytch client instance
+    const client = new StytchUIClient(token);
+    setStytchClient(client);
+  }, []);
+
+  // Return a loading screen until the Stytch client is initialized
+  if (!stytchClient) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <StytchProvider stytch={stytchClient}>
+      <Outlet /> {/* Render the routes */}
+    </StytchProvider>
+  );
 }
