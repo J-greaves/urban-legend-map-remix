@@ -22,29 +22,22 @@ export interface LoaderData {
   stories: Story[];
 }
 
-//Fetches data from mysql, overly complex as I was having issues with coordinates format, tidy later!
+//Fetches story data from mysql, overly complex as I was having issues with coordinates format, tidy later!
 export const loader: LoaderFunction = async () => {
-  const stories = await prisma.stories.findMany();
-  const parsedStories = stories.map((story) => {
-    let coordinates: [number, number] | null = null;
-    try {
-      coordinates = JSON.parse(story.latlong);
-      // Ensure it's a valid coordinate array
-      if (
-        Array.isArray(coordinates) &&
-        coordinates.length === 2 &&
-        typeof coordinates[0] === "number" &&
-        typeof coordinates[1] === "number"
-      ) {
-        return { ...story, latlong: coordinates };
-      }
-    } catch {
-      console.log("Invalid coordinates found for story:", story);
-    }
-    return { ...story, latlong: null };
+  const response = await fetch("http://localhost:3000/stories", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
-  return json({ stories: parsedStories });
+  if (!response.ok) {
+    throw new Response("Failed to load stories", { status: response.status });
+  }
+
+  const stories = await response.json();
+
+  return json({ stories });
 };
 
 //post new myth (with data from Myth Modal form) to mysql
