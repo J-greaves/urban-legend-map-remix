@@ -9,7 +9,7 @@ import {
 import { StytchProvider } from "@stytch/react";
 import { StytchUIClient } from "@stytch/vanilla-js";
 import type { LinksFunction } from "@remix-run/node";
-import { StytchHeadlessClient } from "@stytch/vanilla-js/dist/StytchHeadlessClient";
+import "./styles/global.css";
 
 import "./tailwind.css";
 
@@ -23,6 +23,10 @@ export const links: LinksFunction = () => [
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+  },
+  {
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Faculty+Glyphic&display=swap",
   },
 ];
 
@@ -49,7 +53,7 @@ export default function App() {
 
   useEffect(() => {
     // Initialize Stytch UI Client on the client side
-    const token = import.meta.env.VITE_STYTCH_PUBLIC_TOKEN; //have to add 'VITE_' for client-side env variables in Vite
+    const token = import.meta.env.VITE_STYTCH_PUBLIC_TOKEN;
     if (!token) {
       console.error("VITE_STYTCH_PUBLIC_TOKEN is missing.");
       return;
@@ -60,14 +64,13 @@ export default function App() {
     setStytchClient(client);
   }, []);
 
-  // Return a loading screen until the Stytch client is initialized
   if (!stytchClient) {
     return <div>Loading...</div>;
   }
 
   return (
     <StytchProvider stytch={stytchClient}>
-      <Outlet /> {/* Render the routes */}
+      <Outlet />
     </StytchProvider>
   );
 }

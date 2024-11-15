@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        creamyText: "#FAEBD7", // Custom color
+      },
       fontFamily: {
         sans: [
           '"Inter"',

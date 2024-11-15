@@ -6,6 +6,7 @@ import StoryModal from "~/components/StoryModal";
 import Header from "~/components/Header";
 import { prisma } from "~/db/prisma.server";
 import { Link } from "@remix-run/react";
+import { useStytchUser } from "@stytch/react";
 
 export interface Story {
   id: number;
@@ -83,6 +84,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Index() {
+  const { user } = useStytchUser();
   const [isSMVisible, setIsSMVisible] = useState(false);
   const [story, setStory] = useState<Story | null>(null);
   const [burgerOnOff, setBurgerOnOff] = useState(false);
@@ -113,19 +115,31 @@ export default function Index() {
         setIsSMVisible={setIsSMVisible}
         story={story}
       />
+      {/* burger */}
       <div
-        className={`flex items-start flex-col g-4 p-8 fixed top-0 left-0 w-[80%] max-w-[300px] h-full bg-gray-900 shadow-lg shadow-black border-r-2 border-slate-950 z-50 transform transition-transform duration-1000 ease-in-out ${
+        className={`flex text-creamyText ]  text-4xl items-start flex-col gap-8 pl-10 pt-4 fixed top-0 left-0 w-[80%] max-w-[300px] h-full bg-gray-900 shadow-lg shadow-black border-r-2 border-slate-950 z-50 transform transition-transform duration-1000 ease-in-out ${
           burgerOnOff ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <Link to="/login">login</Link>
         <button
+          className="place-self-end bg-gray-900 p-1.5 mr-3 rounded-xl border hover:bg-gray-700 transition duration-300 ease-in-out"
           onClick={() => {
             setBurgerOnOff(!burgerOnOff);
           }}
         >
-          close
+          <img src="close.png" className="w-[32px]" />
         </button>
+        <div className="transform hover:scale-105 transition-transform duration-200">
+          <li>
+            <Link to="/login">login</Link>
+          </li>
+        </div>
+        {user ? (
+          <p className="place-self-end mt-auto text-[18px]">
+            Logged in user:
+            <br /> {user.emails[0].email}
+          </p>
+        ) : null}
       </div>
       {/* Map Component */}
       <div className="absolute top-0 left-0 w-full h-full z-0 ">

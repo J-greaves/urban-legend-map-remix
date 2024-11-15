@@ -6,6 +6,8 @@ async function seed() {
 
   await prisma.stories.deleteMany();
 
+  await prisma.$executeRaw`ALTER TABLE stories AUTO_INCREMENT = 1`;
+
   await prisma.stories.createMany({
     data: storiesData,
   });

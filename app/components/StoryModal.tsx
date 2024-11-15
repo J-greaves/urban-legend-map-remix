@@ -98,7 +98,6 @@ const StoryModal: React.FC<StoryModalProps> = ({
             <div className="flex flex-row flex-wrap gap-2">
               {images
                 .filter((image: GoogleImage, index, self) => {
-                  // Check if the current image's title already exists earlier in the array
                   return (
                     index ===
                     self.findIndex((i: GoogleImage) => i.title === image.title)

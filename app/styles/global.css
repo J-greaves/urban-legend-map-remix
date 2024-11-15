@@ -1,0 +1,29 @@
+/* app/styles/global.css */
+#oauth-google {
+  background-color: #374151 !important;
+  color: #faebd7 !important;
+  border-radius: 20px !important;
+  border: 2px solid black !important;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.5s ease;
+  max-width: 500px;
+  align-self: center;
+}
+
+#oauth-google:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+/* Style the SVG icon */
+#oauth-google svg {
+  height: 24px;
+  width: 24px;
+  margin-right: 8px; /* Space between icon and text */
+  vertical-align: middle;
+}
+
+/* Style the text inside the Google button */
+#oauth-google span {
+  font-family: "Playfair Display", serif; /* Change font family */
+  color: #faebd7 !important; /* Text color */
+}
