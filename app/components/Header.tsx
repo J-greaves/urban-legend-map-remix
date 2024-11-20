@@ -1,6 +1,6 @@
-import { useStytchUser } from "@stytch/react";
 import { LogOutButton } from "./LogOutButton";
 import { useNavigate } from "@remix-run/react";
+import type { User } from "@stytch/vanilla-js";
 
 interface HeaderProps {
   handleFilterChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -8,6 +8,7 @@ interface HeaderProps {
   setBurgerOnOff: React.Dispatch<React.SetStateAction<boolean>>;
   isHeaderVisible: boolean;
   setIsHeaderVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  user: User | null;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -16,8 +17,8 @@ const Header: React.FC<HeaderProps> = ({
   setBurgerOnOff,
   isHeaderVisible,
   setIsHeaderVisible,
+  user,
 }) => {
-  const { user } = useStytchUser();
   const navigate = useNavigate();
   return (
     <div className="flex flex-col h-full justify-center text-creamyText">

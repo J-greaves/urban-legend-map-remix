@@ -14,6 +14,21 @@ interface MapComponentProps {
   setStories: React.Dispatch<React.SetStateAction<Story[]>>;
 }
 
+interface StoryData {
+  success?: boolean;
+  story?: {
+    id: number;
+    title: string;
+    location: string;
+    story_type: string;
+    story: string;
+    latlong: string;
+    createdAt: Date;
+    authorId: number | null;
+  };
+  error?: string;
+}
+
 export const iconMap: { [key: string]: string } = {
   myth: "/zeus.png",
   legend: "/history.png",
@@ -42,7 +57,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewMythModalOpen, setIsNewMythModalOpen] = useState(false);
-  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [storyAdded, setStoryAdded] = useState<Story | undefined>();
   const markersRef = useRef<maplibregl.Marker[]>([]);
 
   //MapLibre map initialisation
@@ -61,8 +76,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
         setIsModalOpen(false);
         const lngLat: [number, number] = [event.lngLat.lng, event.lngLat.lat];
         setMarkerPosition(lngLat);
-        const { x, y } = initialisedMap.project(lngLat);
-        setModalPosition({ top: y, left: x });
         setIsModalOpen(true);
 
         const newPopup = new maplibregl.Popup({
@@ -99,6 +112,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
   }, []);
 
+  //place markers on map
   useEffect(() => {
     if (!map) return;
 
@@ -173,6 +187,18 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
   }, [stories, map]);
 
+  //add story to map
+  useEffect(() => {
+    if (storyAdded) {
+      alert(
+        `New Story Added:\nTitle: ${storyAdded.title}\nStory: ${storyAdded.story}`
+      );
+      setStories([...stories, storyAdded]);
+    }
+
+    setIsNewMythModalOpen(false);
+  }, [storyAdded]);
+
   return (
     <>
       {/* Map Container */}
@@ -186,13 +212,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
       />
       {/* Myth Modal */}
       <MythModal
-        onClose={() => setIsNewMythModalOpen(false)}
         isVisible={isNewMythModalOpen}
         markerPosition={markerPosition}
-        map={map}
         actionData={actionData}
-        stories={stories}
-        setStories={setStories}
+        setIsNewMythModalOpen={setIsNewMythModalOpen}
+        setStoryAdded={setStoryAdded}
       />
     </>
   );

@@ -38,13 +38,13 @@ const LoginOrSignup = () => {
   };
 
   return (
-    <div className="flex flex-col bg-gray-900 w-full h-[100vh]  sm:justify-center items-center gap-10">
+    <main className="flex flex-col bg-gray-900 w-full h-[100vh]  sm:justify-center items-center gap-10">
       <img
         className="sm:mt-0 mt-8 max-h-[80px] overflow-hidden"
         src="/logo.png"
       />
       <StytchLogin config={config} styles={styles} />
-    </div>
+    </main>
   );
 };
 

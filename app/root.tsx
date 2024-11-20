@@ -11,7 +11,7 @@ import { StytchUIClient } from "@stytch/vanilla-js";
 import type { LinksFunction } from "@remix-run/node";
 import "./styles/global.css";
 
-import "./tailwind.css";
+import "./styles/tailwind.css";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

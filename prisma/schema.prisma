@@ -12,9 +12,12 @@ model stories {
   title      String
   story_type String
   story      String   @db.Text
-  latlong    String
+  latlong    Json
   createdAt  DateTime @default(now())
   location   String
+  authorId   Int?     // Nullable field for the author's ID
+  author     User?    @relation(fields: [authorId], references: [id]) // Relation to User model
 
-  @@map("stories")
+  @@index([authorId], map: "stories_authorId_fkey") // Index for authorId for performance
+  @@map("stories") // Map to the original table name
 }

@@ -5,44 +5,31 @@ import { useFetcher } from "@remix-run/react";
 import { Story } from "~/routes/_index";
 
 interface MythModalProps {
-  onClose: () => void;
   isVisible: boolean;
   markerPosition: [number, number] | null;
-  map: maplibregl.Map | null;
   actionData: any;
-  stories: Story[];
-  setStories: React.Dispatch<React.SetStateAction<Story[]>>;
+  setIsNewMythModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setStoryAdded: React.Dispatch<React.SetStateAction<Story | undefined>>;
 }
 
-interface StoryData {
-  success?: boolean;
-  story?: {
-    id: number;
-    title: string;
-    location: string;
-    story_type: string;
-    story: string;
-    latlong: string;
-    createdAt: Date;
-  };
-  error?: string;
+interface FetcherData {
+  story: Story;
 }
 
 const MythModal: React.FC<MythModalProps> = ({
-  onClose,
   isVisible,
   markerPosition,
-  map,
   actionData,
-  stories,
-  setStories,
+  setIsNewMythModalOpen,
+  setStoryAdded,
 }) => {
   const smallMapRef = useRef<HTMLDivElement | null>(null);
   const smallMapRefMarker = useRef<maplibregl.Marker | null>(null);
-  const fetcher = useFetcher<StoryData>();
   const titleRef = useRef<HTMLInputElement>(null);
   const storyRef = useRef<HTMLTextAreaElement>(null);
   const storyTypeRef = useRef<HTMLSelectElement>(null);
+  const locationRef = useRef<HTMLInputElement>(null);
+  const fetcher = useFetcher<FetcherData>();
 
   //MapLibre small map for New Myth Modal initialisation
   useEffect(() => {
@@ -68,27 +55,13 @@ const MythModal: React.FC<MythModalProps> = ({
     }
   }, [markerPosition]);
 
-  //Optimistcally render new myth and alert user (change alert to modal at some point)
   useEffect(() => {
-    if (fetcher.data?.success && fetcher.data.story) {
-      const story = fetcher.data.story;
-      alert(`New Story Added:\nTitle: ${story.title}\nStory: ${story.story}`);
-      const newStory: Story = {
-        id: story.id,
-        title: story.title,
-        location: story.location,
-        story_type: story.story_type,
-        story: story.story,
-        latlong: JSON.parse(story.latlong),
-        createdAt: story.createdAt,
-      };
-      setStories([...stories, newStory]);
-    }
+    setIsNewMythModalOpen(false);
+    if (fetcher.data) setStoryAdded(fetcher.data.story);
     if (titleRef.current) titleRef.current.value = "";
+    if (locationRef.current) locationRef.current.value = "";
     if (storyRef.current) storyRef.current.value = "";
     if (storyTypeRef.current) storyTypeRef.current.value = "";
-
-    onClose();
   }, [fetcher.data]);
 
   return (
@@ -132,7 +105,7 @@ const MythModal: React.FC<MythModalProps> = ({
               id="location"
               name="location"
               placeholder="Enter street, town, city etc..."
-              ref={titleRef}
+              ref={locationRef}
               className="p-2 rounded border w-[100%]"
             />
           </div>
@@ -183,7 +156,9 @@ const MythModal: React.FC<MythModalProps> = ({
             </button>
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                setIsNewMythModalOpen(false);
+              }}
               className="w-full py-2 bg-slate-900 text-white font-semibold rounded-lg border-2 border-slate-950 shadow-2xl hover:bg-slate-700 transition duration-200 ease-in-out"
             >
               Close
