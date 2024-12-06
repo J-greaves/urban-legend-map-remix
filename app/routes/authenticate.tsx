@@ -1,10 +1,14 @@
 import { useEffect } from "react";
 import { useStytch } from "@stytch/react";
 import { useNavigate } from "@remix-run/react";
+import { useUser } from "../contexts/UserContext";
+import Loading from "~/components/Loading";
+import { checkIfUserExists } from "~/db/api";
 
 const Authenticate = () => {
   const stytch = useStytch();
   const navigate = useNavigate();
+  const { setLoggedInUser } = useUser();
 
   useEffect(() => {
     const authenticate = async () => {
@@ -21,9 +25,16 @@ const Authenticate = () => {
             const email = response.user.emails[0].email;
 
             if (email) {
-              const userExists = await checkIfUserExists(email);
-              console.log(userExists, "userExists just before nav");
-              if (userExists) {
+              const userData = await checkIfUserExists(email);
+              console.log(userData, "returned user data");
+              if (userData.user) {
+                setLoggedInUser({
+                  id: userData.user.id,
+                  username: userData.user.userName,
+                  email: userData.user.email,
+                  avatarUrl: userData.user.avatarUrl,
+                  memberSince: userData.user.createdAt,
+                });
                 navigate("/profile");
               } else {
                 navigate("/signup");
@@ -43,22 +54,7 @@ const Authenticate = () => {
     authenticate();
   }, [stytch, navigate]);
 
-  const checkIfUserExists = async (email: string) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/users/check-user?email=${email}`
-      );
-      const data = await response.json();
-      console.log(data, "data from auth return");
-      // Check if the backend says the user exists
-      return data.exists;
-    } catch (error) {
-      console.error("Error checking user existence", error);
-      return false;
-    }
-  };
-
-  return <div>Loading...</div>;
+  return <Loading />;
 };
 
 export default Authenticate;

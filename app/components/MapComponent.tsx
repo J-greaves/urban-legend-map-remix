@@ -14,21 +14,6 @@ interface MapComponentProps {
   setStories: React.Dispatch<React.SetStateAction<Story[]>>;
 }
 
-interface StoryData {
-  success?: boolean;
-  story?: {
-    id: number;
-    title: string;
-    location: string;
-    story_type: string;
-    story: string;
-    latlong: string;
-    createdAt: Date;
-    authorId: number | null;
-  };
-  error?: string;
-}
-
 export const iconMap: { [key: string]: string } = {
   myth: "/zeus.png",
   legend: "/history.png",
@@ -55,7 +40,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(
     null
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewMythModalOpen, setIsNewMythModalOpen] = useState(false);
   const [storyAdded, setStoryAdded] = useState<Story | undefined>();
   const markersRef = useRef<maplibregl.Marker[]>([]);
@@ -70,13 +54,79 @@ const MapComponent: React.FC<MapComponentProps> = ({
         center: [0, 20],
         zoom: 2,
         minZoom: 2,
+        antialias: true,
+      });
+
+      initialisedMap.on("load", () => {
+        let labelLayerId;
+
+        initialisedMap.addSource("openmaptiles", {
+          url: "https://api.maptiler.com/tiles/v3/tiles.json?key=gEmLBDE8Bs39pXFQEk0Q",
+          type: "vector",
+        });
+
+        initialisedMap.addSource("maptiler-terrain", {
+          type: "raster-dem",
+          url: "https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=gEmLBDE8Bs39pXFQEk0Q",
+          tileSize: 256,
+        });
+
+        initialisedMap.setTerrain({
+          source: "maptiler-terrain",
+          exaggeration: 1.5,
+        });
+
+        initialisedMap.setLight({
+          anchor: "viewport",
+          color: "white",
+          intensity: 0.7,
+        });
+
+        initialisedMap.addLayer(
+          {
+            id: "3d-buildings",
+            source: "openmaptiles",
+            "source-layer": "building",
+            type: "fill-extrusion",
+            minzoom: 15,
+            paint: {
+              "fill-extrusion-color": [
+                "interpolate",
+                ["linear"],
+                ["get", "render_height"],
+                0,
+                "#d0d0d0",
+                100,
+                "#a8d0e6",
+                300,
+                "#374785",
+              ],
+              "fill-extrusion-height": [
+                "interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                15,
+                0,
+                16,
+                ["get", "render_height"],
+              ],
+              "fill-extrusion-base": [
+                "case",
+                [">=", ["get", "zoom"], 16],
+                ["get", "render_min_height"],
+                0,
+              ],
+              "fill-extrusion-opacity": 0.9,
+              "fill-extrusion-vertical-gradient": true,
+            },
+          },
+          labelLayerId
+        );
       });
 
       initialisedMap.on("click", (event) => {
-        setIsModalOpen(false);
         const lngLat: [number, number] = [event.lngLat.lng, event.lngLat.lat];
         setMarkerPosition(lngLat);
-        setIsModalOpen(true);
 
         const newPopup = new maplibregl.Popup({
           closeOnClick: true,
@@ -102,7 +152,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
       });
 
       initialisedMap.on("move", () => {
-        setIsModalOpen(false);
         setIsNewMythModalOpen(false);
       });
 

@@ -9,8 +9,8 @@ import {
 import { StytchProvider } from "@stytch/react";
 import { StytchUIClient } from "@stytch/vanilla-js";
 import type { LinksFunction } from "@remix-run/node";
+import { UserProvider } from "./contexts/UserContext";
 import "./styles/global.css";
-
 import "./styles/tailwind.css";
 
 export const links: LinksFunction = () => [
@@ -70,7 +70,9 @@ export default function App() {
 
   return (
     <StytchProvider stytch={stytchClient}>
-      <Outlet />
+      <UserProvider>
+        <Outlet />
+      </UserProvider>
     </StytchProvider>
   );
 }

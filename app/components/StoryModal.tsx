@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Story } from "~/routes/_index";
 import { iconMap } from "./MapComponent";
+import { useUser } from "~/contexts/UserContext";
 
 interface StoryModalProps {
   isSMVisible: boolean;
   setIsSMVisible: React.Dispatch<React.SetStateAction<boolean>>;
   story: Story | null;
+  onDeleteStory: (storyId: number) => void;
 }
 
 interface GoogleImage {
@@ -17,9 +19,12 @@ const StoryModal: React.FC<StoryModalProps> = ({
   isSMVisible,
   setIsSMVisible,
   story,
+  onDeleteStory,
 }) => {
   const [images, setImages] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(false); // New state for loading
   const modalContentRef = useRef<HTMLDivElement | null>(null);
+  const user = useUser();
 
   useEffect(() => {
     if (isSMVisible && modalContentRef.current) {
@@ -49,6 +54,32 @@ const StoryModal: React.FC<StoryModalProps> = ({
     }
   }
 
+  async function deleteStory(storyId: number) {
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`http://localhost:3000/stories/${storyId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Story deleted successfully:", result.message);
+        setIsSMVisible(false); // Close the modal
+        onDeleteStory(storyId); // Trigger parent component to update map markers
+      } else {
+        console.error("Failed to delete story:", result.message);
+      }
+    } catch (error) {
+      console.error("Error while deleting story:", error);
+    } finally {
+      setIsDeleting(false); // Reset loading state
+    }
+  }
+
   function handleSearch(query: string) {
     fetchImages(query);
   }
@@ -67,9 +98,29 @@ const StoryModal: React.FC<StoryModalProps> = ({
           ref={modalContentRef}
           className="bg-slate-950 bg-opacity-90 p-8 rounded shadow-lg w-[80%] h-[80%] gap-4 flex flex-col overflow-y-auto"
         >
-          <h2 className="text-3xl font-semibold text-white">
-            {story?.title ?? null}
-          </h2>
+          {story?.imageUrl ? (
+            <img
+              src={story.imageUrl}
+              className="w-[150px] h-[150px] rounded-md hover:cursor-pointer transform hover:scale-105 transition-transform duration-3000"
+            />
+          ) : null}
+          <div className="flex flex-row">
+            <h2 className="text-3xl font-semibold text-white">
+              {story?.title ?? null}
+            </h2>
+            {user.loggedInUser?.id === story?.authorId ? (
+              isDeleting ? (
+                <p className="ml-auto text-white animate-pulse">Deleting...</p>
+              ) : (
+                <img
+                  src="Delete-button.svg"
+                  onClick={() => deleteStory(story!.id)}
+                  className="place-self-end justify-self-end ml-auto w-[32px] hover:cursor-pointer transform hover:scale-105 transition-transform duration-3000"
+                  alt="Delete story"
+                />
+              )
+            ) : null}
+          </div>
           <div className="flex flex-row items-center gap-4">
             <img src={icon} className="w-[35px] justify-self-center mb-1" />
             <h3>

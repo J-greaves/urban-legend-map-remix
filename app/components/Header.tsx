@@ -1,6 +1,7 @@
 import { LogOutButton } from "./LogOutButton";
 import { useNavigate } from "@remix-run/react";
 import type { User } from "@stytch/vanilla-js";
+import { useUser } from "~/contexts/UserContext";
 
 interface HeaderProps {
   handleFilterChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -20,6 +21,7 @@ const Header: React.FC<HeaderProps> = ({
   user,
 }) => {
   const navigate = useNavigate();
+  const { loggedInUser } = useUser();
   return (
     <div className="flex flex-col h-full justify-center text-creamyText">
       {/* The sliding header */}
@@ -66,15 +68,17 @@ const Header: React.FC<HeaderProps> = ({
               <option value="other">Other</option>
             </select>
           </div>
-          {user ? (
-            <p className="md:block hidden sm:mr-4">
+          {loggedInUser ? (
+            <p className="md:block hidden sm:mr-4 text-right">
               Logged in user:
-              <br /> {user.emails[0].email}
+              <br /> {loggedInUser.username}
             </p>
           ) : null}
 
           {user ? (
-            <LogOutButton />
+            <div className="sm:block hidden">
+              <LogOutButton />
+            </div>
           ) : (
             <button
               className="sm:rounded sm:block hidden text-black sm:p-1 p-0.5 sm:mx-4 sm:text-base sm:font-normal font-bold text-xs rounded-lg w-auto sm:max-w-[100px] max-w-[40px]"

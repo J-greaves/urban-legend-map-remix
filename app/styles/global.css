@@ -27,3 +27,53 @@
   font-family: "Playfair Display", serif; /* Change font family */
   color: #faebd7 !important; /* Text color */
 }
+
+/* Ensure the slider container takes up full height */
+.slider-container {
+  height: 280px; /* Matches the parent container height */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Slick Slider base styles */
+.slick-slider {
+  margin: auto; /* Center the carousel horizontally */
+  padding: 0; /* Remove padding if unnecessary */
+  width: 100%; /* Full width */
+  height: 100%; /* Ensure the slider matches the parent height */
+}
+
+/* The slick track container */
+.slick-track {
+  display: flex; /* Arrange slides in a row */
+  align-items: stretch; /* Stretch slides to match the track's height */
+  height: 280px;
+}
+
+/* Each individual slide */
+.slick-slide {
+  display: flex; /* Allow content inside the slide to be aligned properly */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  height: 200px; /* Match the parent container height */
+  padding: 10px; /* Optional spacing between slides */
+  box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
+}
+
+/* Content inside each slide */
+.slick-slide .content {
+  margin: auto;
+  height: 100%;
+  width: 90%; /* Optional: Adjust content width */
+  display: flex; /* Ensure proper alignment for inner elements */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Optional: Adjust padding for slick arrows */
+.slick-prev,
+.slick-next {
+  z-index: 2; /* Ensure they stay on top */
+  height: auto;
+}
